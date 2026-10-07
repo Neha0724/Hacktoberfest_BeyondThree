@@ -18,18 +18,35 @@ Challenge: *VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs*
 
 </div>
 
+## Team
+
+Team Name: [BeyondThree]
+
+### Team Members
+
+| Name |
+|---|---|
+| Neha Tated      | 
+| Chetna Deshmukh |
+| Vedika Bandewar |
+
+Challenge: VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs  
+Round: Qualifier  
+Submission: README-only GitHub repository
+
 ## Contents
 
 | | | |
 |---|---|---|
-| [1. About SmartLedger](#1-about-smartledger) | [8. System Architecture](#8-system-architecture) | [15. Expected Features](#15-expected-features) |
-| [2. Problem Statement](#2-problem-statement) | [9. Data Flow](#9-data-flow) | [16. Implementation Approach](#16-implementation-approach) |
-| [3. Project Overview](#3-project-overview) | [10. Data Quality, Evidence and Intent Layer](#10-data-quality-evidence-and-intent-layer) | [17. Expected Final Output](#17-expected-final-output) |
-| [4. Target Users](#4-target-users) | [11. Confidence, Explainability and Human Review](#11-confidence-explainability-and-human-review) | [18. Future Scope and Scalability](#18-future-scope-and-scalability) |
-| [5. Core Objectives](#5-core-objectives) | [12. Voucher Categories](#12-voucher-categories) | [19. Open-Source Dependencies](#19-open-source-dependencies) |
-| [6. Selected Open-Source AI Technology](#6-selected-open-source-ai-technology) | [13. Agentic Workflow](#13-agentic-workflow) | [20. Expected Challenges and Mitigation](#20-expected-challenges-and-mitigation) |
-| [7. Role of AI](#7-role-of-ai) | [14. Technology Stack](#14-technology-stack) | [Decision Framework](#decision-framework) |
-| [MVP Priority](#mvp-priority) | [Why SmartLedger?](#why-smartledger) | [Project Vision](#project-vision) |
+| [Team](#team) | [1. About SmartLedger](#1-about-smartledger) | [2. Problem Statement](#2-problem-statement) |
+| [Proposed Solution](#proposed-solution) | [3. Project Overview](#3-project-overview) | [4. Target Users / Use Case](#4-target-users--use-case) |
+| [5. Core Objectives](#5-core-objectives) | [6. Selected Open-Source AI Technology](#6-selected-open-source-ai-technology) | [7. Role of AI](#7-role-of-ai) |
+| [8. System Architecture](#8-system-architecture) | [Component-Level Architecture](#component-level-architecture) | [9. Data Flow](#9-data-flow) |
+| [10. Data Quality, Evidence and Intent Layer](#10-data-quality-evidence-and-intent-layer) | [11. Confidence, Explainability and Human Review](#11-confidence-explainability-and-human-review) | [12. Voucher Categories](#12-voucher-categories) |
+| [13. Agentic Workflow](#13-agentic-workflow) | [14. Technology Stack](#14-technology-stack) | [15. Expected Features](#15-expected-features) |
+| [MVP Priority](#mvp-priority) | [16. Implementation Approach](#16-implementation-approach) | [17. Expected Final Output](#17-expected-final-output) |
+| [18. Future Scope and Scalability](#18-future-scope-and-scalability) | [19. Open-Source Dependencies](#19-open-source-dependencies) | [20. Expected Challenges and Mitigation](#20-expected-challenges-and-mitigation) |
+| [Decision Framework](#decision-framework) | [Why SmartLedger?](#why-smartledger) | [Project Vision](#project-vision) |
 
 > [!IMPORTANT]
 > At a glance
@@ -37,7 +54,6 @@ Challenge: *VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs*
 > - Initial model: Qwen2.5-3B-Instruct. The final lightweight Qwen instruct model is chosen after benchmarking.
 > - MVP focus: reliable voucher classification using a classical ML baseline and Qwen-based reasoning.
 > - Added incrementally: evidence fusion, conflict resolution and human review, once the baseline pipeline is validated.
-
 ## 1. About SmartLedger
 
 SmartLedger is an AI-powered financial intelligence system that analyzes structured transaction data and determines the most appropriate accounting voucher category.
@@ -49,7 +65,6 @@ Instead of directly asking an AI model to classify a record, SmartLedger works i
 3. Combines machine-learning predictions with open-source LLM reasoning.
 
 It classifies a transaction when sufficient evidence exists, and routes uncertain or conflicting cases to a human reviewer.
-
 ## 2. Problem Statement
 
 Businesses process thousands of transactions involving purchases, sales, payments, receipts, returns, expenses, payroll, inventory movements, imports, exports, orders and deliveries.
@@ -61,6 +76,16 @@ Each transaction must be assigned to the correct voucher category, but:
 - Records are frequently incomplete or ambiguous.
 
 SmartLedger therefore focuses on five things: prediction, evidence, consistency, uncertainty and human validation.
+
+## Proposed Solution
+
+SmartLedger proposes an evidence-driven voucher classification pipeline that combines classical machine learning with an open-source Qwen language model.
+
+The system validates and preprocesses transaction data, extracts financial evidence and builds a transaction intent profile. The ML model provides a pattern-based prediction while the Qwen model provides contextual reasoning. Their outputs are evaluated together with the available evidence and data quality.
+
+High-confidence cases are classified automatically. Conflicting or insufficiently supported cases are investigated or routed to human review.
+
+The proposed solution combines structured transaction analysis, classical ML classification, open-source LLM reasoning, evidence-based decision making, conflict detection, confidence estimation and selective human review.
 
 ## 3. Project Overview
 
@@ -94,13 +119,17 @@ Other signals: no return reference, no payroll, no import/export
 Derived intent:  Acquisition of goods from a supplier
 Likely voucher:  Purchase
 ```
-## 4. Target Users
+## 4. Target Users / Use Case
 
 - Accountants and finance teams
 - Bookkeeping professionals
 - Small and medium-sized businesses
 - ERP / accounting software providers
 - Financial data-processing teams
+
+### Primary Use Case
+
+An accountant uploads an Excel or CSV file containing structured financial transactions without voucher types. SmartLedger analyzes each record, identifies the transaction intent, predicts the most appropriate voucher category, provides supporting evidence and confidence, and routes uncertain cases for human review.
 
 ## 5. Core Objectives
 
@@ -112,7 +141,6 @@ Likely voucher:  Purchase
 6. Route uncertain cases to human review.
 7. Produce machine-readable output.
 8. Evaluate honestly on unseen records.
-
 ## 6. Selected Open-Source AI Technology
 
 | | |
@@ -132,13 +160,16 @@ Likely voucher:  Purchase
 | Memory usage | Memory needed to run the model |
 | Available hardware | Fit with the hardware the system will actually run on |
 
-Why an open-source model?
+### Why This Technology Was Selected
+
+Qwen2.5-3B-Instruct is the initial candidate because SmartLedger requires contextual reasoning over structured financial transactions while remaining practical for local or limited-resource inference. The final lightweight Qwen instruct model will be selected after benchmarking inference speed, output quality, memory usage and hardware compatibility.
+
+### Why Open-Source AI?
 
 - Privacy: it can run locally, so financial data stays in the user's environment.
 - Control: no dependence on a paid proprietary API.
 - Flexibility: the model sits behind a clean interface and can be swapped (Gemma, Llama, Mistral and Phi are candidate alternatives).
 - Structured output: it can be constrained to return only valid voucher categories in a fixed format.
-
 ## 7. Role of AI
 
 SmartLedger uses two complementary AI components. Neither is trusted alone.
@@ -150,7 +181,6 @@ SmartLedger uses two complementary AI components. Neither is trusted alone.
 | Contribution | Prediction and probability | Prediction and reasoning from the intent profile |
 
 The LLM reads the structured transaction context, interprets relationships between fields, selects a category from a constrained list, and explains its reasoning. The ML model gives an independent second opinion. When they agree with strong evidence, the transaction is classified. When they disagree, the system investigates.
-
 ## 8. System Architecture
 
 ```mermaid
@@ -194,6 +224,22 @@ flowchart TB
 | Intelligence | ML prediction and LLM reasoning |
 | Decision | Fusion, conflict detection, confidence, explanation |
 | Output | JSON, CSV, Excel, human review queue |
+
+## Component-Level Architecture
+
+| Component | Responsibility | Technology |
+|---|---|---|
+| React Dashboard | Upload, results, filtering, review and export | React, Tailwind CSS |
+| FastAPI Backend | API handling and pipeline orchestration | Python, FastAPI |
+| Validation Module | Schema validation and input cleaning | Pandas, OpenPyXL |
+| Evidence Layer | Extracts transaction evidence and intent | Python |
+| ML Classifier | Pattern-based voucher prediction | Scikit-learn |
+| LLM Reasoning Module | Contextual transaction reasoning | Qwen, Transformers, PyTorch |
+| Decision Engine | Evidence fusion, conflict handling and routing | Python |
+| Confidence Module | Estimates prediction reliability | Python |
+| Human Review Module | Handles uncertain or unresolved records | React, FastAPI |
+| Export Module | Produces structured results | JSON, CSV, Excel |
+
 ## 9. Data Flow
 
 1. The user uploads an Excel or CSV file.
@@ -207,7 +253,6 @@ flowchart TB
 9. Conflict resolution handles any disagreement through targeted re-analysis.
 10. The record is auto-classified or sent to human review, with confidence and explanation.
 11. Results are exported and shown on the dashboard.
-
 ## 10. Data Quality, Evidence and Intent Layer
 
 ### Data Quality Assessment
@@ -263,7 +308,6 @@ The evidence layer can represent which signals support or contradict candidate v
 | Invoice / item details | ✓ | ✓ | — | — |
 
 The MVP starts with a small set of high-value evidence signals. The matrix can be expanded only when error analysis shows that additional evidence improves classification.
-
 ## 11. Confidence, Explainability and Human Review
 
 ### Confidence
@@ -359,7 +403,6 @@ This makes the system useful beyond the hackathon for debugging, audit support, 
 ### Human in the loop
 
 Reviewers confirm or correct flagged records. Corrections are kept as labeled data for future evaluation and model improvement.
-
 ## 12. Voucher Categories
 
 27 supported categories. The validation layer rejects any output outside this set.
@@ -370,7 +413,6 @@ Reviewers confirm or correct flagged records. Corrections are kept as labeled da
 | Orders and delivery | Purchase Order · Sales Order · Receipt Note · Delivery Note · Rejection In · Rejection Out |
 | Inventory and job work | Stock Journal · Physical Stock · Material In · Material Out · Job Work In Order · Job Work Out Order |
 | Trade, payroll and other | Import · Export · Expense · Advance / Prepayment · Salary / Payroll · Attendance · Other / Miscellaneous |
-
 ## 13. Agentic Workflow
 
 SmartLedger applies selective reasoning: the expensive investigation step runs only when the two AI components do not already agree with high confidence. Easy cases take the fast path; hard cases get extra attention.
@@ -398,7 +440,6 @@ flowchart TB
 ```
 
 Targeted re-analysis re-examines only the evidence in dispute (for example party direction, a return reference, or payment versus goods flow) instead of re-running everything. This keeps the system efficient on limited hardware.
-
 ## 14. Technology Stack
 
 | Area | Technology |
@@ -413,7 +454,6 @@ Targeted re-analysis re-examines only the evidence in dispute (for example party
 | Frontend | React.js, Tailwind CSS |
 | Output formats | JSON, CSV, Excel |
 | Development | Git, GitHub |
-
 ## 15. Expected Features
 
 - Excel / CSV upload and schema validation
@@ -432,7 +472,6 @@ Targeted re-analysis re-examines only the evidence in dispute (for example party
 - Human review queue
 - Batch classification
 - Filtering and export
-
 ## MVP Priority
 
 > [!IMPORTANT]
@@ -463,7 +502,6 @@ flowchart LR
 |---|---|---|
 | MVP | Classical ML baseline and Qwen-based reasoning for voucher classification | Establishes a reliable, measurable foundation first |
 | Incremental | Evidence fusion, conflict resolution and human review | Each layer is added on top of a validated baseline, so its benefit can be measured |
-
 ## 16. Implementation Approach
 
 SmartLedger will be developed in a dependency-first sequence. Each stage is validated before the next layer is added. This keeps the project implementable and prevents reliability features from being added before the core classifier is understood.
@@ -577,7 +615,6 @@ flowchart LR
 The goal is to improve the system based on real failure cases rather than optimizing a single headline metric.
 
 Evaluation notes. Testing uses unseen records with a stratified split. Because voucher categories are imbalanced, Macro F1 and per-category F1 are the headline metrics. Results are compared across the ML baseline, the LLM alone, and the full SmartLedger pipeline. Confidence reliability checks that high-confidence predictions really are more accurate.
-
 ## 17. Expected Final Output
 
 High-evidence transaction
@@ -616,7 +653,6 @@ Machine-readable output
   }
 }
 ```
-
 ## 18. Future Scope and Scalability
 
 The reliability features in the implementation plan are part of the core product roadmap. The following items are longer-term extensions after the core system is stable:
@@ -633,7 +669,6 @@ The reliability features in the implementation plan are part of the core product
 - Expense analysis
 - Financial reporting
 - Audit assistance
-
 ## 19. Open-Source Dependencies
 
 | Component | Purpose |
@@ -651,7 +686,6 @@ The reliability features in the implementation plan are part of the core product
 | Tailwind CSS | UI development |
 
 The final implementation will use version-pinned dependencies appropriate for the selected model and deployment environment.
-
 ## 20. Expected Challenges and Mitigation
 
 | Challenge | Mitigation |
@@ -670,7 +704,6 @@ The final implementation will use version-pinned dependencies appropriate for th
 | Difficult class pairs | Hard-negative analysis and evidence-specific improvements |
 | Traceability | AI decision audit trail |
 | Large datasets | Batch processing and optimized inference |
-
 ## Decision Framework
 
 ```mermaid
@@ -700,9 +733,8 @@ SmartLedger asks:
 > *"What financial event does this record represent, what evidence supports that interpretation, and do our AI systems agree?"*
 
 It combines structured ML, transaction evidence, open-source LLM reasoning, conflict detection and human validation.
-
-
 ## Project Vision
 
 SmartLedger aims to act as an intelligent bridge between raw financial transaction data and automated accounting workflows.
+
 Automate confident decisions. Explain uncertain decisions. Keep humans in control when evidence is insufficient.
