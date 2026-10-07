@@ -761,5 +761,3 @@ SmartLedger aims to act as an intelligent bridge between raw financial transacti
 **Automate confident decisions. Explain uncertain decisions. Keep humans in control when evidence is insufficient.**
 
 ---
-
-<sub>**Qualifier note:** this repository contains the technical project proposal required for the qualifier round. Implementation code, datasets, notebooks, binaries and generated files are not included.</sub>
