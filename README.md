@@ -759,5 +759,3 @@ It combines **structured ML, transaction evidence, open-source LLM reasoning, co
 SmartLedger aims to act as an intelligent bridge between raw financial transaction data and automated accounting workflows.
 
 **Automate confident decisions. Explain uncertain decisions. Keep humans in control when evidence is insufficient.**
-
----
