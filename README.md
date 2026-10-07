@@ -8,7 +8,8 @@
 
 ![Status](https://img.shields.io/badge/status-qualifier%20proposal-1F3A5F)
 ![AI](https://img.shields.io/badge/AI-open--source%20LLM-0E7C86)
-![Model](https://img.shields.io/badge/model-Qwen%20family-orange)
+![Initial Model](https://img.shields.io/badge/initial%20model-Qwen2.5--3B--Instruct-orange)
+![MVP](https://img.shields.io/badge/MVP-ML%20baseline%20%2B%20Qwen%20reasoning-2E7D32)
 ![Backend](https://img.shields.io/badge/backend-Python%20%7C%20FastAPI-3776AB)
 ![Frontend](https://img.shields.io/badge/frontend-React%20%7C%20Tailwind-61DAFB)
 
@@ -25,11 +26,19 @@ Challenge: *VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs*
 |---|---|---|
 | [1. About SmartLedger](#1-about-smartledger) | [8. System Architecture](#8-system-architecture) | [15. Expected Features](#15-expected-features) |
 | [2. Problem Statement](#2-problem-statement) | [9. Data Flow](#9-data-flow) | [16. Implementation Approach](#16-implementation-approach) |
-| [3. Project Overview](#3-project-overview) | [10. Evidence and Intent Layer](#10-evidence-and-intent-layer) | [17. Expected Final Output](#17-expected-final-output) |
+| [3. Project Overview](#3-project-overview) | [10. Data Quality, Evidence and Intent Layer](#10-data-quality-evidence-and-intent-layer) | [17. Expected Final Output](#17-expected-final-output) |
 | [4. Target Users](#4-target-users) | [11. Confidence, Explainability and Human Review](#11-confidence-explainability-and-human-review) | [18. Future Scope and Scalability](#18-future-scope-and-scalability) |
 | [5. Core Objectives](#5-core-objectives) | [12. Voucher Categories](#12-voucher-categories) | [19. Open-Source Dependencies](#19-open-source-dependencies) |
 | [6. Selected Open-Source AI Technology](#6-selected-open-source-ai-technology) | [13. Agentic Workflow](#13-agentic-workflow) | [20. Expected Challenges and Mitigation](#20-expected-challenges-and-mitigation) |
 | [7. Role of AI](#7-role-of-ai) | [14. Technology Stack](#14-technology-stack) | [Decision Framework](#decision-framework) |
+| [MVP Priority](#mvp-priority) | [Why SmartLedger?](#why-smartledger) | [Project Vision](#project-vision) |
+
+> [!IMPORTANT]
+> **At a glance**
+>
+> - **Initial model:** Qwen2.5-3B-Instruct. The final lightweight Qwen instruct model is chosen after benchmarking.
+> - **MVP focus:** reliable voucher classification using a classical ML baseline and Qwen-based reasoning.
+> - **Added incrementally:** evidence fusion, conflict resolution and human review, once the baseline pipeline is validated.
 
 ---
 
@@ -123,10 +132,20 @@ Likely voucher:  Purchase
 
 | | |
 |---|---|
-| **LLM** | Qwen-family instruction-tuned model (lightweight or quantized variants for limited hardware) |
+| **LLM** | **Qwen2.5-3B-Instruct** or another lightweight Qwen instruct model selected based on available hardware and benchmark performance |
 | **Runtime** | PyTorch |
 | **LLM framework** | Hugging Face Transformers |
 | **Classical ML** | Scikit-learn |
+
+> [!IMPORTANT]
+> **Proposed model: Qwen2.5-3B-Instruct** is the initial candidate. The final lightweight Qwen instruct model will be selected after benchmarking the criteria below.
+
+| Benchmark criterion | What is compared |
+|---|---|
+| **Inference speed** | Time to classify a single record and a batch |
+| **Output quality** | Classification accuracy and valid structured output |
+| **Memory usage** | Memory needed to run the model |
+| **Available hardware** | Fit with the hardware the system will actually run on |
 
 **Why an open-source model?**
 
@@ -162,7 +181,7 @@ flowchart TB
         direction TB
         V["Validation and Cleaning"]:::process --> EV["Evidence Layer<br/>and Intent Profile"]:::process
         EV --> ML["ML Model<br/>Scikit-learn"]:::ml
-        EV --> LLM["Qwen LLM<br/>Transformers + PyTorch"]:::llm
+        EV --> LLM["Qwen LLM<br/>Qwen2.5-3B-Instruct (initial)<br/>Transformers + PyTorch"]:::llm
         ML --> FU["Evidence Fusion"]:::decision
         LLM --> FU
         FU --> CR["Conflict Resolution"]:::decision
@@ -213,7 +232,30 @@ flowchart TB
 
 ---
 
-## 10. Evidence and Intent Layer
+## 10. Data Quality, Evidence and Intent Layer
+
+### Data Quality Assessment
+
+Before interpreting a transaction, SmartLedger checks whether the record contains enough usable information.
+
+```mermaid
+flowchart LR
+    T["Transaction"]:::input --> Q["Data Quality<br/>Assessment"]:::process --> L["High / Medium / Low"]:::decision --> E["Evidence<br/>Extraction"]:::process --> I["Transaction<br/>Intent"]:::output
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
+```
+
+The data-quality result becomes an input to the later confidence and routing stages. A low-quality record should not automatically be treated as a high-confidence prediction.
+
+### Evidence and Intent Layer
 
 This layer is what separates SmartLedger from a plain classifier. It turns raw fields into **financial evidence**, then into **intent**.
 
@@ -229,6 +271,22 @@ This layer is what separates SmartLedger from a plain classifier. It turns raw f
 | **Inventory** | Is stock moving, counted, rejected or sent for job work? |
 
 **Why intent matters:** two records can share the same amount and a similar description yet represent completely different events. Reasoning about *what happened* is more reliable than matching keywords.
+
+### Voucher Evidence Matrix
+
+The evidence layer can represent which signals support or contradict candidate voucher categories. This creates a transparent intermediate representation between raw transaction fields and AI predictions.
+
+| Evidence | Purchase | Sales | Payment | Receipt |
+|---|:---:|:---:|:---:|:---:|
+| Supplier → Business | ✓ | — | possible | — |
+| Customer → Business | — | — | — | ✓ |
+| Goods → Business | ✓ | — | — | — |
+| Goods → Customer | — | ✓ | — | — |
+| Money → Supplier | possible | — | ✓ | — |
+| Money → Business | — | possible | — | ✓ |
+| Invoice / item details | ✓ | ✓ | — | — |
+
+The MVP starts with a small set of high-value evidence signals. The matrix can be expanded only when error analysis shows that additional evidence improves classification.
 
 ---
 
@@ -246,6 +304,42 @@ Confidence is a **system-level estimate** built from several sources, not a numb
 
 This avoids the **overconfidence** problem of a single model. Confidence thresholds are tuned on validation data.
 
+### Confidence Calibration
+
+After the baseline confidence mechanism is working, SmartLedger can evaluate whether predicted confidence corresponds to actual correctness using validation data.
+
+Possible measures include:
+
+- Reliability / calibration curves
+- Expected Calibration Error (ECE)
+- Brier score
+
+Calibration is an **incremental reliability feature**, not a prerequisite for the first MVP.
+
+### Selective Classification and Abstention
+
+SmartLedger does not have to force a voucher label when the available evidence is insufficient. If the system cannot justify a reliable decision, it can **abstain** and route the record for review.
+
+```mermaid
+flowchart TB
+    P["Prediction"]:::ml --> C{"Evidence +<br/>Confidence Check"}:::decision
+    C -- "Reliable" --> CL["Classify"]:::good
+    C -- "Insufficient" --> AB["Abstain"]:::review
+    AB --> HR["Human Review"]:::review
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
+```
+
+For financial data, an explicit *"insufficient evidence"* decision can be safer than a confident but incorrect classification.
+
 ### Routing
 
 | Situation | Action |
@@ -258,6 +352,35 @@ This avoids the **overconfidence** problem of a single model. Confidence thresho
 ### Explainability
 
 Every prediction includes the **supporting evidence** and a short **explanation**. Review cases also state **why** the system was unsure (for example: missing party, no goods information, conflicting predictions).
+
+### AI Decision Audit Trail
+
+For each classified transaction, SmartLedger can retain the decision inputs needed to explain and reproduce the result:
+
+```mermaid
+flowchart LR
+    ID["Transaction ID"]:::input
+    ID --> A1["Data quality"]:::process
+    ID --> A2["Evidence signals"]:::process
+    ID --> A3["ML prediction + probability"]:::ml
+    ID --> A4["Qwen prediction"]:::llm
+    ID --> A5["Agreement / conflict"]:::decision
+    ID --> A6["Final decision"]:::decision
+    ID --> A7["Confidence"]:::decision
+    ID --> A8["Review status"]:::review
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
+```
+
+This makes the system useful beyond the hackathon for debugging, audit support, error analysis and model improvement.
 
 ### Human in the loop
 
@@ -312,7 +435,7 @@ flowchart TB
 
 | Area | Technology |
 |---|---|
-| **Open-source AI** | Qwen-family LLM |
+| **Open-source AI** | Qwen-family LLM (initial candidate: **Qwen2.5-3B-Instruct**) |
 | **Machine learning** | Scikit-learn |
 | **Runtime** | PyTorch |
 | **LLM framework** | Hugging Face Transformers |
@@ -334,56 +457,162 @@ flowchart TB
 - Open-source LLM reasoning
 - Evidence fusion and conflict detection
 - Confidence estimation
+- Data quality scoring
+- Voucher evidence matrix
+- Selective classification / abstention
 - Explainable predictions
+- AI decision audit trail
+- Hard-negative error analysis
 - Human review queue
 - Batch classification
 - Filtering and export
 
 ---
 
+## MVP Priority
+
+> [!IMPORTANT]
+> The first implementation focuses on **reliable voucher classification using a classical ML baseline and Qwen-based reasoning**. Evidence fusion, conflict resolution and human review are implemented **incrementally after the baseline pipeline is validated**.
+
+```mermaid
+flowchart LR
+    subgraph MVP["MVP · FIRST IMPLEMENTATION"]
+        direction LR
+        M1["Classical ML<br/>baseline"]:::mvp --> M2["Qwen-based<br/>reasoning"]:::mvp --> M3["Reliable voucher<br/>classification"]:::mvp
+    end
+    V{"Baseline pipeline<br/>validated?"}:::decision
+    subgraph INC["ADDED INCREMENTALLY"]
+        direction LR
+        I1["Evidence<br/>fusion"]:::later --> I2["Conflict<br/>resolution"]:::later --> I3["Human<br/>review"]:::later
+    end
+    MVP --> V
+    V -- "Yes" --> INC
+
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:2.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef later fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    style MVP fill:#F1F8F2,stroke:#2E7D32,stroke-width:2px,color:#1F2937
+    style INC fill:#F5F8FB,stroke:#9DB4CC,stroke-dasharray:5 5,color:#1F2937
+```
+
+| Stage | What is built | Why this order |
+|---|---|---|
+| **MVP** | Classical ML baseline and Qwen-based reasoning for voucher classification | Establishes a reliable, measurable foundation first |
+| **Incremental** | Evidence fusion, conflict resolution and human review | Each layer is added on top of a validated baseline, so its benefit can be measured |
+
+---
+
 ## 16. Implementation Approach
+
+SmartLedger will be developed in a **dependency-first sequence**. Each stage is validated before the next layer is added. This keeps the project implementable and prevents reliability features from being added before the core classifier is understood.
+
+### Implementation Order
 
 ```mermaid
 flowchart TB
-    subgraph F["FOUNDATION"]
+    subgraph R1["Steps 1 – 4"]
         direction LR
-        P1["1 · Dataset<br/>understanding"]:::found --> P2["2 · Data<br/>preprocessing"]:::found --> P3["3 · Evidence<br/>layer"]:::found
+        S1["1 · Dataset +<br/>schema validation"]:::step --> S2["2 · Data preprocessing<br/>+ quality score"]:::step --> S3["3 · Classical<br/>ML baseline"]:::mvp --> S4["4 · Qwen<br/>reasoning"]:::mvp
     end
-    subgraph I["INTELLIGENCE"]
+    subgraph R2["Steps 5 – 8"]
         direction LR
-        P4["4 · ML<br/>baseline"]:::intel --> P5["5 · Qwen<br/>LLM"]:::intel --> P6["6 · Evidence<br/>fusion"]:::intel
+        S5["5 · Baseline comparison<br/>+ error analysis"]:::step --> S6["6 · Evidence representation<br/>/ matrix"]:::step --> S7["7 · Evidence<br/>fusion"]:::step --> S8["8 · Abstention<br/>+ routing"]:::step
     end
-    subgraph R["RELIABILITY"]
+    subgraph R3["Steps 9 – 13"]
         direction LR
-        P7["7 · Conflict resolution<br/>and human review routing"]:::rel
+        S9["9 · AI decision<br/>audit trail"]:::step --> S10["10 · Human review<br/>workflow"]:::step --> S11["11 · Confidence<br/>calibration"]:::step --> S12["12 · React + FastAPI<br/>integration"]:::step --> S13["13 · Final evaluation<br/>+ optimization"]:::step
     end
-    subgraph D["DELIVERY"]
-        direction LR
-        P8["8 · Application<br/>React + FastAPI"]:::deliv --> P9["9 · Evaluation"]:::deliv
-    end
-    F --> I --> R --> D
-
-    classDef found fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
-    classDef intel fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
-    classDef rel fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
-    classDef deliv fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
-    style F fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937
-    style I fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937
-    style R fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937
-    style D fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937
+    R1 --> R2 --> R3
+    style R1 fill:#FFFFFF,stroke:#9DB4CC,color:#1F2937
+    style R2 fill:#FFFFFF,stroke:#9DB4CC,color:#1F2937
+    style R3 fill:#FFFFFF,stroke:#9DB4CC,color:#1F2937
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
 ```
+
+**Green-bordered steps (3 and 4) form the MVP.**
+
+### MVP Boundary
+
+The first working MVP is:
+
+```mermaid
+flowchart LR
+    X["Excel / CSV"]:::input --> V["Validation +<br/>Preprocessing"]:::process
+    V --> ML["Classical ML<br/>baseline"]:::mvp
+    V --> Q["Qwen-based<br/>reasoning"]:::mvp
+    ML --> OUT["Voucher<br/>classification"]:::output
+    Q --> OUT
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
+```
+
+The remaining reliability components are added incrementally after this pipeline is validated.
+
+### Phase Details
 
 | Phase | Focus | Details |
 |---|---|---|
-| **1. Dataset understanding** | Know the data | Fields, voucher distribution, missing values, ambiguous categories, train / validation / test splits |
-| **2. Data preprocessing** | Clean and prepare | Missing values, categorical normalization, numerical processing, text features, transaction-level features |
-| **3. Evidence layer** | Understand the event | Party, money, goods/service, return, order, import/export, payroll and inventory evidence |
-| **4. ML baseline** | Set a benchmark | Evaluate Logistic Regression, Random Forest and XGBoost; select from measured results |
-| **5. Open-source LLM** | Add reasoning | Integrate Qwen with structured transaction context and constrained voucher output |
-| **6. Evidence fusion** | Combine signals | ML prediction and probability, LLM prediction, transaction evidence, data completeness |
-| **7. Conflict resolution** | Handle disagreement | Detect conflicts, targeted re-analysis, route unresolved cases to human review |
-| **8. Application** | Make it usable | React dashboard, FastAPI backend and classification pipeline |
-| **9. Evaluation** | Prove it works | Accuracy, Precision, Recall, Macro F1, per-category F1, confusion matrix, inference time, confidence reliability |
+| **1. Dataset + schema** | Know the data | Fields, voucher distribution, missing values, ambiguous categories, train / validation / test splits |
+| **2. Preprocessing + quality** | Prepare reliable inputs | Missing values, normalization, text processing, transaction-level features, data-quality score |
+| **3. ML baseline** `MVP` | Set a benchmark | Evaluate Logistic Regression, Random Forest and XGBoost; select from measured results |
+| **4. Qwen reasoning** `MVP` | Add semantic reasoning | Integrate the selected lightweight Qwen instruct model with structured transaction context and constrained voucher output |
+| **5. Error analysis** | Understand failures | Confusion matrix, hard-negative pairs, missing evidence and failure patterns |
+| **6. Evidence representation** | Make decisions explainable | Evidence extraction and voucher evidence matrix |
+| **7. Evidence fusion** | Combine signals | ML prediction, LLM prediction, evidence and data quality |
+| **8. Abstention + routing** | Avoid forced errors | Selective classification, conflict handling and review routing |
+| **9. Audit trail** | Make decisions traceable | Store evidence, predictions, decision, confidence and review status |
+| **10. Human review** | Close the loop | Reviewer confirmation/correction and labeled feedback |
+| **11. Confidence calibration** | Improve trust | Validate whether confidence corresponds to actual correctness |
+| **12. Application** | Make it usable | React dashboard, FastAPI backend and classification pipeline |
+| **13. Final evaluation** | Prove it works | Accuracy, Precision, Recall, Macro F1, per-category F1, hard-negative performance, inference time and confidence reliability |
+
+### Error Analysis and Hard-Negative Evaluation
+
+Overall accuracy is not enough for this problem. SmartLedger will explicitly analyze voucher pairs that are easy to confuse, such as:
+
+- Purchase ↔ Payment
+- Purchase ↔ Sales
+- Purchase Return ↔ Purchase
+- Sales Return ↔ Sales
+- Purchase Order ↔ Purchase
+- Sales Order ↔ Sales
+
+The development loop is:
+
+```mermaid
+flowchart LR
+    A["Train"]:::step --> B["Evaluate"]:::process --> C["Find Errors"]:::review --> D["Group<br/>Confusions"]:::decision --> E["Identify<br/>Missing Evidence"]:::decision --> F["Improve<br/>Features / Prompt"]:::ml --> G["Re-evaluate"]:::process
+    G -.-> C
+    classDef input fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef process fill:#E1EEFB,stroke:#5B8DC9,color:#1F2937,stroke-width:1.5px
+    classDef ml fill:#EDE7FB,stroke:#8C6FCF,color:#1F2937,stroke-width:1.5px
+    classDef llm fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
+    classDef decision fill:#FFF3D1,stroke:#D4A72C,color:#1F2937,stroke-width:1.5px
+    classDef output fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
+    classDef good fill:#E3F4E8,stroke:#5BA672,color:#1F2937,stroke-width:1.5px
+    classDef step fill:#F5F8FB,stroke:#9DB4CC,color:#1F2937,stroke-width:1.5px
+    classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
+```
+
+The goal is to improve the system based on real failure cases rather than optimizing a single headline metric.
 
 **Evaluation notes.** Testing uses unseen records with a stratified split. Because voucher categories are imbalanced, **Macro F1 and per-category F1** are the headline metrics. Results are compared across the ML baseline, the LLM alone, and the full SmartLedger pipeline. Confidence reliability checks that high-confidence predictions really are more accurate.
 
@@ -432,6 +661,8 @@ Reason:       Insufficient party, goods and transaction-context information.
 
 ## 18. Future Scope and Scalability
 
+The reliability features in the implementation plan are part of the core product roadmap. The following items are longer-term extensions after the core system is stable:
+
 - ERP and accounting platform integration
 - Continuous learning from human-reviewed transactions
 - Domain-specific fine-tuning
@@ -451,7 +682,7 @@ Reason:       Insufficient party, goods and transaction-context information.
 
 | Component | Purpose |
 |---|---|
-| Qwen-family LLM | Contextual transaction reasoning |
+| Qwen-family LLM (initial candidate: Qwen2.5-3B-Instruct) | Contextual transaction reasoning |
 | Hugging Face Transformers | LLM loading and inference |
 | PyTorch | Model execution |
 | Scikit-learn | ML classification and evaluation |
@@ -477,10 +708,13 @@ The final implementation will use **version-pinned dependencies** appropriate fo
 | Class imbalance | Stratified evaluation and class-aware metrics |
 | LLM hallucination | Constrained categories and output validation |
 | Invalid output | Strict structured-output validation |
-| Limited hardware | Lightweight or quantized model variants |
+| Limited hardware | Lightweight Qwen model (Qwen2.5-3B-Instruct as the initial candidate) or quantized variants |
 | Ambiguous transactions | Human-in-the-loop review |
 | Unseen patterns | ML and semantic reasoning combination |
-| Overconfidence | System-level confidence from multiple evidence sources |
+| Overconfidence | System-level confidence from multiple evidence sources and later calibration |
+| Forced classification | Abstention when evidence is insufficient |
+| Difficult class pairs | Hard-negative analysis and evidence-specific improvements |
+| Traceability | AI decision audit trail |
 | Large datasets | Batch processing and optimized inference |
 
 ---
