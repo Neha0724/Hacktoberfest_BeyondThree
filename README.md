@@ -13,16 +13,14 @@
 ![Backend](https://img.shields.io/badge/backend-Python%20%7C%20FastAPI-3776AB)
 ![Frontend](https://img.shields.io/badge/frontend-React%20%7C%20Tailwind-61DAFB)
 
-**Hacktober Fest — Open Source AI Hackathon**
+Hacktober Fest — Open Source AI Hackathon
 Challenge: *VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs*
 
 </div>
 
----
 
 ## Contents
 
-| | | |
 |---|---|---|
 | [1. About SmartLedger](#1-about-smartledger) | [8. System Architecture](#8-system-architecture) | [15. Expected Features](#15-expected-features) |
 | [2. Problem Statement](#2-problem-statement) | [9. Data Flow](#9-data-flow) | [16. Implementation Approach](#16-implementation-approach) |
@@ -34,27 +32,24 @@ Challenge: *VYOM+ — Intelligent Voucher Classification Using Open-Source LLMs*
 | [MVP Priority](#mvp-priority) | [Why SmartLedger?](#why-smartledger) | [Project Vision](#project-vision) |
 
 > [!IMPORTANT]
-> **At a glance**
+> At a glance
 >
-> - **Initial model:** Qwen2.5-3B-Instruct. The final lightweight Qwen instruct model is chosen after benchmarking.
-> - **MVP focus:** reliable voucher classification using a classical ML baseline and Qwen-based reasoning.
-> - **Added incrementally:** evidence fusion, conflict resolution and human review, once the baseline pipeline is validated.
+> - Initial model: Qwen2.5-3B-Instruct. The final lightweight Qwen instruct model is chosen after benchmarking.
+> - MVP focus: reliable voucher classification using a classical ML baseline and Qwen-based reasoning.
+> - Added incrementally: evidence fusion, conflict resolution and human review, once the baseline pipeline is validated.
 
----
 
 ## 1. About SmartLedger
 
-**SmartLedger** is an AI-powered financial intelligence system that analyzes structured transaction data and determines the most appropriate **accounting voucher category**.
+SmartLedger is an AI-powered financial intelligence system that analyzes structured transaction data and determines the most appropriate accounting voucher category.
 
 Instead of directly asking an AI model to classify a record, SmartLedger works in three steps:
 
-1. **Identifies the evidence** inside the transaction (who, what, how much, which direction).
-2. **Derives the transaction intent**, meaning the real financial event behind the record.
-3. **Combines** machine-learning predictions with open-source LLM reasoning.
+1. Identifies the evidence inside the transaction (who, what, how much, which direction).
+2. Derives the transaction intent, meaning the real financial event behind the record.
+3. Combines machine-learning predictions with open-source LLM reasoning.
 
-It classifies a transaction when sufficient evidence exists, and routes uncertain or conflicting cases to a **human reviewer**.
-
----
+It classifies a transaction when sufficient evidence exists, and routes uncertain or conflicting cases to a human reviewer.
 
 ## 2. Problem Statement
 
@@ -62,17 +57,17 @@ Businesses process thousands of transactions involving purchases, sales, payment
 
 Each transaction must be assigned to the correct voucher category, but:
 
-- A **single field or keyword is often insufficient**.
-- **Multiple categories look alike** (Purchase vs Sales, Payment vs Advance).
-- Records are frequently **incomplete or ambiguous**.
+- A single field or keyword is often insufficient.
+- Multiple categories look alike (Purchase vs Sales, Payment vs Advance).
+- Records are frequently incomplete or ambiguous.
 
-SmartLedger therefore focuses on five things: **prediction, evidence, consistency, uncertainty and human validation.**
+SmartLedger therefore focuses on five things: prediction, evidence, consistency, uncertainty and human validation.
 
 ---
 
 ## 3. Project Overview
 
-SmartLedger converts a raw transaction record into an **interpretable representation of the underlying financial event**.
+SmartLedger converts a raw transaction record into an interpretable representation of the underlying financial event.
 
 ```mermaid
 flowchart LR
@@ -89,7 +84,7 @@ flowchart LR
     classDef output fill:#FCE4EA,stroke:#D9708C,color:#1F2937,stroke-width:1.5px
 ```
 
-**Example intent profile**
+Example intent profile
 
 ```
 Transaction:   Supplier invoice with item, taxable value and GST
@@ -118,9 +113,9 @@ Likely voucher:  Purchase
 ## 5. Core Objectives
 
 1. Classify transactions into the correct voucher category.
-2. Use the **complete transaction context**, not isolated keywords.
+2. Use the complete transaction context, not isolated keywords.
 3. Handle incomplete and ambiguous records.
-4. Back every prediction with **evidence, a confidence level and an explanation**.
+4. Back every prediction with evidence, a confidence level and an explanation.
 5. Detect disagreement between AI components and resolve it.
 6. Route uncertain cases to human review.
 7. Produce machine-readable output.
@@ -132,27 +127,27 @@ Likely voucher:  Purchase
 
 | | |
 |---|---|
-| **LLM** | **Qwen2.5-3B-Instruct** or another lightweight Qwen instruct model selected based on available hardware and benchmark performance |
-| **Runtime** | PyTorch |
-| **LLM framework** | Hugging Face Transformers |
-| **Classical ML** | Scikit-learn |
+| LLM | Qwen2.5-3B-Instruct or another lightweight Qwen instruct model selected based on available hardware and benchmark performance |
+| Runtime | PyTorch |
+| LLM framework | Hugging Face Transformers |
+| Classical ML | Scikit-learn |
 
 > [!IMPORTANT]
-> **Proposed model: Qwen2.5-3B-Instruct** is the initial candidate. The final lightweight Qwen instruct model will be selected after benchmarking the criteria below.
+> Proposed model: Qwen2.5-3B-Instruct is the initial candidate. The final lightweight Qwen instruct model will be selected after benchmarking the criteria below.
 
 | Benchmark criterion | What is compared |
 |---|---|
-| **Inference speed** | Time to classify a single record and a batch |
-| **Output quality** | Classification accuracy and valid structured output |
-| **Memory usage** | Memory needed to run the model |
-| **Available hardware** | Fit with the hardware the system will actually run on |
+| Inference speed | Time to classify a single record and a batch |
+| Output quality | Classification accuracy and valid structured output |
+| Memory usage | Memory needed to run the model |
+| Available hardware | Fit with the hardware the system will actually run on |
 
-**Why an open-source model?**
+Why an open-source model?
 
-- **Privacy:** it can run locally, so financial data stays in the user's environment.
-- **Control:** no dependence on a paid proprietary API.
-- **Flexibility:** the model sits behind a clean interface and can be swapped (Gemma, Llama, Mistral and Phi are candidate alternatives).
-- **Structured output:** it can be constrained to return only valid voucher categories in a fixed format.
+- Privacy: it can run locally, so financial data stays in the user's environment.
+- Control: no dependence on a paid proprietary API.
+- Flexibility: the model sits behind a clean interface and can be swapped (Gemma, Llama, Mistral and Phi are candidate alternatives).
+- Structured output: it can be constrained to return only valid voucher categories in a fixed format.
 
 ---
 
@@ -160,13 +155,13 @@ Likely voucher:  Purchase
 
 SmartLedger uses two complementary AI components. Neither is trusted alone.
 
-| | **ML model** | **Open-source LLM** |
+| | ML model | Open-source LLM |
 |---|---|---|
-| **Strength** | Learns patterns from labeled data, fast, gives probabilities | Understands context and wording, handles unfamiliar patterns |
-| **Weakness** | Struggles with unseen or ambiguous wording | Can be overconfident or produce invalid output |
-| **Contribution** | Prediction and probability | Prediction and reasoning from the intent profile |
+| Strength | Learns patterns from labeled data, fast, gives probabilities | Understands context and wording, handles unfamiliar patterns |
+| Weakness | Struggles with unseen or ambiguous wording | Can be overconfident or produce invalid output |
+| Contribution | Prediction and probability | Prediction and reasoning from the intent profile |
 
-The LLM reads the structured transaction context, interprets relationships between fields, selects a category from a constrained list, and explains its reasoning. The ML model gives an independent second opinion. **When they agree with strong evidence, the transaction is classified. When they disagree, the system investigates.**
+The LLM reads the structured transaction context, interprets relationships between fields, selects a category from a constrained list, and explains its reasoning. The ML model gives an independent second opinion. When they agree with strong evidence, the transaction is classified. When they disagree, the system investigates.
 
 ---
 
@@ -206,28 +201,28 @@ flowchart TB
 
 | Layer | Responsibility |
 |---|---|
-| **Interface** | Upload, results, review queue, filtering, export |
-| **API** | Receives files, runs the pipeline, returns results |
-| **Preprocessing** | Schema validation, missing values, normalization |
-| **Evidence layer** | Extracts evidence and builds the intent profile |
-| **Intelligence** | ML prediction and LLM reasoning |
-| **Decision** | Fusion, conflict detection, confidence, explanation |
-| **Output** | JSON, CSV, Excel, human review queue |
+| Interface | Upload, results, review queue, filtering, export |
+| API | Receives files, runs the pipeline, returns results |
+| Preprocessing | Schema validation, missing values, normalization |
+| Evidence layer | Extracts evidence and builds the intent profile |
+| Intelligence | ML prediction and LLM reasoning |
+| Decision | Fusion, conflict detection, confidence, explanation |
+| Output | JSON, CSV, Excel, human review queue |
 
 ---
 
 ## 9. Data Flow
 
-1. The user uploads an **Excel or CSV** file.
-2. The system **validates the schema** and cleans the data.
+1. The user uploads an Excel or CSV file.
+2. The system validates the schema and cleans the data.
 3. Missing values are handled; categories, numbers and text are normalized.
-4. The **evidence layer** extracts party, money, goods, return, order, import/export, payroll and inventory evidence.
-5. A **transaction intent profile** is generated for each record.
-6. The **ML model** predicts a voucher type with a probability.
-7. The **Qwen LLM** reasons over the intent profile and predicts a voucher type from the valid list.
-8. **Evidence fusion** combines both predictions, the evidence and the data completeness.
-9. **Conflict resolution** handles any disagreement through targeted re-analysis.
-10. The record is **auto-classified** or **sent to human review**, with confidence and explanation.
+4. The evidence layer extracts party, money, goods, return, order, import/export, payroll and inventory evidence.
+5. A transaction intent profile is generated for each record.
+6. The ML model predicts a voucher type with a probability.
+7. The Qwen LLM reasons over the intent profile and predicts a voucher type from the valid list.
+8. Evidence fusion combines both predictions, the evidence and the data completeness.
+9. Conflict resolution handles any disagreement through targeted re-analysis.
+10. The record is auto-classified or sent to human review, with confidence and explanation.
 11. Results are exported and shown on the dashboard.
 
 ---
@@ -257,20 +252,20 @@ The data-quality result becomes an input to the later confidence and routing sta
 
 ### Evidence and Intent Layer
 
-This layer is what separates SmartLedger from a plain classifier. It turns raw fields into **financial evidence**, then into **intent**.
+This layer is what separates SmartLedger from a plain classifier. It turns raw fields into financial evidence, then into intent.
 
 | Evidence type | The question it answers |
 |---|---|
-| **Party** | Who is the supplier or customer, and which way does the relationship run? |
-| **Money** | Is money paid, received, moved between accounts, or not involved? |
-| **Goods / service** | Are goods or services exchanged, and in which direction? |
-| **Return** | Is this a reversal of an earlier sale or purchase (debit / credit note)? |
-| **Order** | Is this a commitment (order) rather than a completed transaction? |
-| **Import / export** | Is there cross-border or foreign-currency activity? |
-| **Payroll** | Does it involve employees, salary or attendance? |
-| **Inventory** | Is stock moving, counted, rejected or sent for job work? |
+| Party | Who is the supplier or customer, and which way does the relationship run? |
+| Money | Is money paid, received, moved between accounts, or not involved? |
+| Goods / service | Are goods or services exchanged, and in which direction? |
+| Return | Is this a reversal of an earlier sale or purchase (debit / credit note)? |
+| Order | Is this a commitment (order) rather than a completed transaction? |
+| Import / export | Is there cross-border or foreign-currency activity? |
+| Payroll | Does it involve employees, salary or attendance? |
+| Inventory | Is stock moving, counted, rejected or sent for job work? |
 
-**Why intent matters:** two records can share the same amount and a similar description yet represent completely different events. Reasoning about *what happened* is more reliable than matching keywords.
+Why intent matters: two records can share the same amount and a similar description yet represent completely different events. Reasoning about *what happened* is more reliable than matching keywords.
 
 ### Voucher Evidence Matrix
 
@@ -294,7 +289,7 @@ The MVP starts with a small set of high-value evidence signals. The matrix can b
 
 ### Confidence
 
-Confidence is a **system-level estimate** built from several sources, not a number the LLM reports about itself:
+Confidence is a system-level estimate built from several sources, not a number the LLM reports about itself:
 
 - ML prediction probability
 - LLM prediction and its consistency
@@ -302,7 +297,7 @@ Confidence is a **system-level estimate** built from several sources, not a numb
 - Strength of the transaction evidence
 - Completeness of the data
 
-This avoids the **overconfidence** problem of a single model. Confidence thresholds are tuned on validation data.
+This avoids the overconfidence problem of a single model. Confidence thresholds are tuned on validation data.
 
 ### Confidence Calibration
 
@@ -314,11 +309,11 @@ Possible measures include:
 - Expected Calibration Error (ECE)
 - Brier score
 
-Calibration is an **incremental reliability feature**, not a prerequisite for the first MVP.
+Calibration is an incremental reliability feature, not a prerequisite for the first MVP.
 
 ### Selective Classification and Abstention
 
-SmartLedger does not have to force a voucher label when the available evidence is insufficient. If the system cannot justify a reliable decision, it can **abstain** and route the record for review.
+SmartLedger does not have to force a voucher label when the available evidence is insufficient. If the system cannot justify a reliable decision, it can abstain and route the record for review.
 
 ```mermaid
 flowchart TB
@@ -344,14 +339,14 @@ For financial data, an explicit *"insufficient evidence"* decision can be safer 
 
 | Situation | Action |
 |---|---|
-| ML and LLM agree, evidence is strong | **Automatically classified** |
-| They disagree, or evidence is weak | **Evidence investigation** (targeted re-analysis) |
+| ML and LLM agree, evidence is strong | Automatically classified |
+| They disagree, or evidence is weak | Evidence investigation (targeted re-analysis) |
 | Conflict resolved | Classified with the resolved result |
-| Still unresolved or insufficient evidence | **Human review queue** |
+| Still unresolved or insufficient evidence | Human review queue |
 
 ### Explainability
 
-Every prediction includes the **supporting evidence** and a short **explanation**. Review cases also state **why** the system was unsure (for example: missing party, no goods information, conflicting predictions).
+Every prediction includes the supporting evidence and a short explanation. Review cases also state why the system was unsure (for example: missing party, no goods information, conflicting predictions).
 
 ### AI Decision Audit Trail
 
@@ -394,16 +389,16 @@ Reviewers confirm or correct flagged records. Corrections are kept as labeled da
 
 | Group | Categories |
 |---|---|
-| **Core accounting** | Purchase · Sales · Purchase Return / Debit Note · Sales Return / Credit Note · Payment · Receipt · Contra · Journal |
-| **Orders and delivery** | Purchase Order · Sales Order · Receipt Note · Delivery Note · Rejection In · Rejection Out |
-| **Inventory and job work** | Stock Journal · Physical Stock · Material In · Material Out · Job Work In Order · Job Work Out Order |
-| **Trade, payroll and other** | Import · Export · Expense · Advance / Prepayment · Salary / Payroll · Attendance · Other / Miscellaneous |
+| Core accounting | Purchase · Sales · Purchase Return / Debit Note · Sales Return / Credit Note · Payment · Receipt · Contra · Journal |
+| Orders and delivery | Purchase Order · Sales Order · Receipt Note · Delivery Note · Rejection In · Rejection Out |
+| Inventory and job work | Stock Journal · Physical Stock · Material In · Material Out · Job Work In Order · Job Work Out Order |
+| Trade, payroll and other | Import · Export · Expense · Advance / Prepayment · Salary / Payroll · Attendance · Other / Miscellaneous |
 
 ---
 
 ## 13. Agentic Workflow
 
-SmartLedger applies **selective reasoning**: the expensive investigation step runs only when the two AI components do not already agree with high confidence. Easy cases take the fast path; hard cases get extra attention.
+SmartLedger applies selective reasoning: the expensive investigation step runs only when the two AI components do not already agree with high confidence. Easy cases take the fast path; hard cases get extra attention.
 
 ```mermaid
 flowchart TB
@@ -427,7 +422,7 @@ flowchart TB
     classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
 ```
 
-**Targeted re-analysis** re-examines only the evidence in dispute (for example party direction, a return reference, or payment versus goods flow) instead of re-running everything. This keeps the system efficient on limited hardware.
+Targeted re-analysis re-examines only the evidence in dispute (for example party direction, a return reference, or payment versus goods flow) instead of re-running everything. This keeps the system efficient on limited hardware.
 
 ---
 
@@ -435,16 +430,16 @@ flowchart TB
 
 | Area | Technology |
 |---|---|
-| **Open-source AI** | Qwen-family LLM (initial candidate: **Qwen2.5-3B-Instruct**) |
-| **Machine learning** | Scikit-learn |
-| **Runtime** | PyTorch |
-| **LLM framework** | Hugging Face Transformers |
-| **Data processing** | Pandas, NumPy |
-| **Excel handling** | OpenPyXL |
-| **Backend** | Python, FastAPI |
-| **Frontend** | React.js, Tailwind CSS |
-| **Output formats** | JSON, CSV, Excel |
-| **Development** | Git, GitHub |
+| Open-source AI | Qwen-family LLM (initial candidate: Qwen2.5-3B-Instruct) |
+| Machine learning | Scikit-learn |
+| Runtime | PyTorch |
+| LLM framework | Hugging Face Transformers |
+| Data processing | Pandas, NumPy |
+| Excel handling | OpenPyXL |
+| Backend | Python, FastAPI |
+| Frontend | React.js, Tailwind CSS |
+| Output formats | JSON, CSV, Excel |
+| Development | Git, GitHub |
 
 ---
 
@@ -472,7 +467,7 @@ flowchart TB
 ## MVP Priority
 
 > [!IMPORTANT]
-> The first implementation focuses on **reliable voucher classification using a classical ML baseline and Qwen-based reasoning**. Evidence fusion, conflict resolution and human review are implemented **incrementally after the baseline pipeline is validated**.
+> The first implementation focuses on reliable voucher classification using a classical ML baseline and Qwen-based reasoning. Evidence fusion, conflict resolution and human review are implemented incrementally after the baseline pipeline is validated.
 
 ```mermaid
 flowchart LR
@@ -497,14 +492,14 @@ flowchart LR
 
 | Stage | What is built | Why this order |
 |---|---|---|
-| **MVP** | Classical ML baseline and Qwen-based reasoning for voucher classification | Establishes a reliable, measurable foundation first |
-| **Incremental** | Evidence fusion, conflict resolution and human review | Each layer is added on top of a validated baseline, so its benefit can be measured |
+| MVP | Classical ML baseline and Qwen-based reasoning for voucher classification | Establishes a reliable, measurable foundation first |
+| Incremental | Evidence fusion, conflict resolution and human review | Each layer is added on top of a validated baseline, so its benefit can be measured |
 
 ---
 
 ## 16. Implementation Approach
 
-SmartLedger will be developed in a **dependency-first sequence**. Each stage is validated before the next layer is added. This keeps the project implementable and prevents reliability features from being added before the core classifier is understood.
+SmartLedger will be developed in a dependency-first sequence. Each stage is validated before the next layer is added. This keeps the project implementable and prevents reliability features from being added before the core classifier is understood.
 
 ### Implementation Order
 
@@ -538,7 +533,7 @@ flowchart TB
     classDef mvp fill:#E3F4E8,stroke:#2E7D32,color:#1F2937,stroke-width:3px
 ```
 
-**Green-bordered steps (3 and 4) form the MVP.**
+Green-bordered steps (3 and 4) form the MVP.
 
 ### MVP Boundary
 
@@ -569,19 +564,19 @@ The remaining reliability components are added incrementally after this pipeline
 
 | Phase | Focus | Details |
 |---|---|---|
-| **1. Dataset + schema** | Know the data | Fields, voucher distribution, missing values, ambiguous categories, train / validation / test splits |
-| **2. Preprocessing + quality** | Prepare reliable inputs | Missing values, normalization, text processing, transaction-level features, data-quality score |
-| **3. ML baseline** `MVP` | Set a benchmark | Evaluate Logistic Regression, Random Forest and XGBoost; select from measured results |
-| **4. Qwen reasoning** `MVP` | Add semantic reasoning | Integrate the selected lightweight Qwen instruct model with structured transaction context and constrained voucher output |
-| **5. Error analysis** | Understand failures | Confusion matrix, hard-negative pairs, missing evidence and failure patterns |
-| **6. Evidence representation** | Make decisions explainable | Evidence extraction and voucher evidence matrix |
-| **7. Evidence fusion** | Combine signals | ML prediction, LLM prediction, evidence and data quality |
-| **8. Abstention + routing** | Avoid forced errors | Selective classification, conflict handling and review routing |
-| **9. Audit trail** | Make decisions traceable | Store evidence, predictions, decision, confidence and review status |
-| **10. Human review** | Close the loop | Reviewer confirmation/correction and labeled feedback |
-| **11. Confidence calibration** | Improve trust | Validate whether confidence corresponds to actual correctness |
-| **12. Application** | Make it usable | React dashboard, FastAPI backend and classification pipeline |
-| **13. Final evaluation** | Prove it works | Accuracy, Precision, Recall, Macro F1, per-category F1, hard-negative performance, inference time and confidence reliability |
+| 1. Dataset + schema | Know the data | Fields, voucher distribution, missing values, ambiguous categories, train / validation / test splits |
+| 2. Preprocessing + quality | Prepare reliable inputs | Missing values, normalization, text processing, transaction-level features, data-quality score |
+| 3. ML baseline `MVP` | Set a benchmark | Evaluate Logistic Regression, Random Forest and XGBoost; select from measured results |
+| 4. Qwen reasoning `MVP` | Add semantic reasoning | Integrate the selected lightweight Qwen instruct model with structured transaction context and constrained voucher output |
+| 5. Error analysis | Understand failures | Confusion matrix, hard-negative pairs, missing evidence and failure patterns |
+| 6. Evidence representation | Make decisions explainable | Evidence extraction and voucher evidence matrix |
+| 7. Evidence fusion | Combine signals | ML prediction, LLM prediction, evidence and data quality |
+| 8. Abstention + routing | Avoid forced errors | Selective classification, conflict handling and review routing |
+| 9. Audit trail | Make decisions traceable | Store evidence, predictions, decision, confidence and review status |
+| 10. Human review | Close the loop | Reviewer confirmation/correction and labeled feedback |
+| 11. Confidence calibration | Improve trust | Validate whether confidence corresponds to actual correctness |
+| 12. Application | Make it usable | React dashboard, FastAPI backend and classification pipeline |
+| 13. Final evaluation | Prove it works | Accuracy, Precision, Recall, Macro F1, per-category F1, hard-negative performance, inference time and confidence reliability |
 
 ### Error Analysis and Hard-Negative Evaluation
 
@@ -614,13 +609,13 @@ flowchart LR
 
 The goal is to improve the system based on real failure cases rather than optimizing a single headline metric.
 
-**Evaluation notes.** Testing uses unseen records with a stratified split. Because voucher categories are imbalanced, **Macro F1 and per-category F1** are the headline metrics. Results are compared across the ML baseline, the LLM alone, and the full SmartLedger pipeline. Confidence reliability checks that high-confidence predictions really are more accurate.
+Evaluation notes. Testing uses unseen records with a stratified split. Because voucher categories are imbalanced, Macro F1 and per-category F1 are the headline metrics. Results are compared across the ML baseline, the LLM alone, and the full SmartLedger pipeline. Confidence reliability checks that high-confidence predictions really are more accurate.
 
 ---
 
 ## 17. Expected Final Output
 
-**High-evidence transaction**
+High-evidence transaction
 
 ```
 Invoice:      INV-2026-1042
@@ -631,7 +626,7 @@ Evidence:     Supplier → Business | Goods → Business | Money → Supplier
 Explanation:  Transaction represents acquisition of goods from a supplier.
 ```
 
-**Uncertain transaction**
+Uncertain transaction
 
 ```
 Amount:       ₹50,000
@@ -641,7 +636,7 @@ Status:       Needs Human Review
 Reason:       Insufficient party, goods and transaction-context information.
 ```
 
-**Machine-readable output**
+Machine-readable output
 
 ```json
 {
@@ -694,7 +689,7 @@ The reliability features in the implementation plan are part of the core product
 | React.js | Frontend |
 | Tailwind CSS | UI development |
 
-The final implementation will use **version-pinned dependencies** appropriate for the selected model and deployment environment.
+The final implementation will use version-pinned dependencies appropriate for the selected model and deployment environment.
 
 ---
 
@@ -738,7 +733,6 @@ flowchart TB
     classDef review fill:#FBE3E3,stroke:#D46A6A,color:#1F2937,stroke-width:1.5px
 ```
 
----
 
 ## Why SmartLedger?
 
@@ -750,12 +744,11 @@ SmartLedger asks:
 
 > *"What financial event does this record represent, what evidence supports that interpretation, and do our AI systems agree?"*
 
-It combines **structured ML, transaction evidence, open-source LLM reasoning, conflict detection and human validation**.
+It combines structured ML, transaction evidence, open-source LLM reasoning, conflict detection and human validation.
 
----
 
 ## Project Vision
 
 SmartLedger aims to act as an intelligent bridge between raw financial transaction data and automated accounting workflows.
 
-**Automate confident decisions. Explain uncertain decisions. Keep humans in control when evidence is insufficient.**
+Automate confident decisions. Explain uncertain decisions. Keep humans in control when evidence is insufficient.
