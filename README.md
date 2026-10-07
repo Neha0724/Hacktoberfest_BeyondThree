@@ -25,7 +25,7 @@ Team Name: [BeyondThree]
 ### Team Members
 
 | Name |
-|---|---|
+|---|
 | Neha Tated      | 
 | Chetna Deshmukh |
 | Vedika Bandewar |
