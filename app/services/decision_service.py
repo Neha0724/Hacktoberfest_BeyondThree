@@ -2,32 +2,63 @@ def make_decision(ml_result: dict, evidence: str) -> dict:
     top = ml_result.get("top_predictions", [])
 
     category = ml_result.get("predicted_category", "Unknown")
-    confidence = float(top[0]["probability"]) if top else 0.0
+    confidence = (
+        float(top[0]["probability"])
+        if top
+        else 0.0
+    )
 
     second_score = (
         float(top[1]["probability"])
         if len(top) > 1
         else 0.0
     )
+
     margin = confidence - second_score
 
-    # These are review thresholds, not calibrated probabilities.
-    needs_review = confidence < 0.60 or margin < 0.15
+    # Conservative review policy: do not auto-approve
+    # low-confidence or closely competing predictions.
+    low_confidence = confidence < 0.60
+    close_competitors = margin < 0.15
 
-    if confidence < 0.20:
+    needs_review = low_confidence or close_competitors
+
+    if not top:
         reason = (
-            "ML confidence is very low. Verify the transaction "
-            "against the source invoice or accounting document."
+            "No ML prediction scores were returned. "
+            "Manual verification is required."
         )
-    elif needs_review:
+        needs_review = True
+
+    elif confidence < 0.20:
         reason = (
-            "ML confidence is low or competing categories are close. "
-            "Human verification recommended."
+            f"ML confidence is very low ({confidence:.1%}). "
+            "Verify the transaction against its source document."
         )
+
+    elif low_confidence and close_competitors:
+        reason = (
+            f"ML confidence is low ({confidence:.1%}) and "
+            f"the top-two score margin is {margin:.1%}. "
+            "Human verification is required."
+        )
+
+    elif low_confidence:
+        reason = (
+            f"ML confidence is low ({confidence:.1%}). "
+            "Human verification is recommended."
+        )
+
+    elif close_competitors:
+        reason = (
+            f"Top categories are close (score margin {margin:.1%}). "
+            "Human verification is recommended."
+        )
+
     else:
         reason = (
             "ML selected the highest-scoring category. "
-            "Verify against source evidence before posting."
+            "Verify the classification before posting."
         )
 
     return {

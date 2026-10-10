@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 
 import {
@@ -15,8 +13,11 @@ import {
   Clock3,
 
   FileText,
+
   FileSpreadsheet,
+
   Upload,
+
   Download,
 
   History,
@@ -49,11 +50,7 @@ import {
 
 } from "lucide-react";
 
-
-
 const API = import.meta.env.VITE_API_URL || "http://localhost:8001";
-
-
 
 const CATEGORIES = [
 
@@ -107,8 +104,6 @@ const CATEGORIES = [
 
 ];
 
-
-
 const NAVIGATION = [
 
   { label: "Overview", icon: LayoutDashboard },
@@ -121,8 +116,6 @@ const NAVIGATION = [
 
 ];
 
-
-
 const initialForm = {
 
   description: "",
@@ -134,8 +127,6 @@ const initialForm = {
   transaction_type: "",
 
 };
-
-
 
 function Panel({ children, className = "" }) {
 
@@ -154,8 +145,6 @@ function Panel({ children, className = "" }) {
   );
 
 }
-
-
 
 function SectionTitle({ title, subtitle, action }) {
 
@@ -183,8 +172,6 @@ function SectionTitle({ title, subtitle, action }) {
 
 }
 
-
-
 function StatusPill({ status, children }) {
 
   const styles = {
@@ -200,8 +187,6 @@ function StatusPill({ status, children }) {
     info: "bg-sky-50 text-sky-700 ring-sky-200",
 
   };
-
-
 
   return (
 
@@ -223,8 +208,6 @@ function StatusPill({ status, children }) {
 
 }
 
-
-
 function MetricCard({ title, value, description, icon: Icon, tone }) {
 
   const tones = {
@@ -238,8 +221,6 @@ function MetricCard({ title, value, description, icon: Icon, tone }) {
     amber: "bg-amber-50 text-amber-700",
 
   };
-
-
 
   return (
 
@@ -275,13 +256,9 @@ function MetricCard({ title, value, description, icon: Icon, tone }) {
 
 }
 
-
-
 function PredictionCard({ result }) {
 
   if (!result) return null;
-
-
 
   const ml = result.ml || {};
 
@@ -305,11 +282,7 @@ function PredictionCard({ result }) {
 
   );
 
-
-
   const reviewRequired = Boolean(result.needs_review);
-
-
 
   return (
 
@@ -337,8 +310,6 @@ function PredictionCard({ result }) {
 
             </div>
 
-
-
             <p className="text-sm text-slate-500">Recommended category</p>
 
             <h3 className="mt-1 text-2xl font-bold text-slate-900">
@@ -349,8 +320,6 @@ function PredictionCard({ result }) {
 
           </div>
 
-
-
           <StatusPill status={reviewRequired ? "warning" : "success"}>
 
             {reviewRequired ? "Review Required" : "No Review Flag"}
@@ -358,8 +327,6 @@ function PredictionCard({ result }) {
           </StatusPill>
 
         </div>
-
-
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
 
@@ -386,8 +353,6 @@ function PredictionCard({ result }) {
             </p>
 
           </div>
-
-
 
           <div className="rounded-xl border border-white bg-white/80 p-4">
 
@@ -418,8 +383,6 @@ function PredictionCard({ result }) {
           </div>
 
         </div>
-
-
 
         <div className="mt-5">
 
@@ -459,8 +422,6 @@ function PredictionCard({ result }) {
 
         </div>
 
-
-
         {reviewRequired && (
 
           <div className="mt-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
@@ -497,8 +458,6 @@ function PredictionCard({ result }) {
 
       </Panel>
 
-
-
       <Panel>
 
         <SectionTitle
@@ -509,8 +468,6 @@ function PredictionCard({ result }) {
 
         />
 
-
-
         {llm.status === "success" ? (
 
           <>
@@ -520,8 +477,6 @@ function PredictionCard({ result }) {
               {llm.reasoning || "No explanation returned by the model."}
 
             </div>
-
-
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
 
@@ -567,8 +522,6 @@ function PredictionCard({ result }) {
 
       </Panel>
 
-
-
       <Panel>
 
         <SectionTitle
@@ -584,8 +537,6 @@ function PredictionCard({ result }) {
           {result.evidence || result.input || "No evidence available."}
 
         </p>
-
-
 
         {Array.isArray(ml.top_predictions) &&
 
@@ -612,8 +563,6 @@ function PredictionCard({ result }) {
                     Math.min(100, score <= 1 ? score * 100 : score)
 
                   );
-
-
 
                   return (
 
@@ -667,8 +616,6 @@ function PredictionCard({ result }) {
 
 }
 
-
-
 export default function App() {
 
   const [page, setPage] = useState("Overview");
@@ -688,12 +635,14 @@ export default function App() {
   const [error, setError] = useState("");
 
   const [healthMessage, setHealthMessage] = useState("");
+
   const [csvFile, setCsvFile] = useState(null);
+
   const [csvLoading, setCsvLoading] = useState(false);
+
   const [csvError, setCsvError] = useState("");
+
   const [csvSuccess, setCsvSuccess] = useState("");
-
-
 
   async function checkHealth() {
 
@@ -701,15 +650,11 @@ export default function App() {
 
     setHealthMessage("");
 
-
-
     try {
 
       const response = await fetch(`${API}/api/health`);
 
       if (!response.ok) throw new Error("API health check failed");
-
-
 
       setApiStatus("online");
 
@@ -725,15 +670,11 @@ export default function App() {
 
   }
 
-
-
   useEffect(() => {
 
     checkHealth();
 
   }, []);
-
-
 
   function updateField(event) {
 
@@ -743,8 +684,6 @@ export default function App() {
 
   }
 
-
-
   async function classifyVoucher(event) {
 
     event.preventDefault();
@@ -752,8 +691,6 @@ export default function App() {
     setError("");
 
     setResult(null);
-
-
 
     if (!form.description.trim()) {
 
@@ -763,11 +700,7 @@ export default function App() {
 
     }
 
-
-
     setLoading(true);
-
-
 
     const fields = {};
 
@@ -780,8 +713,6 @@ export default function App() {
       fields.transaction_type = form.transaction_type.trim();
 
     }
-
-
 
     try {
 
@@ -801,11 +732,7 @@ export default function App() {
 
       });
 
-
-
       const data = await response.json();
-
-
 
       if (!response.ok) {
 
@@ -817,11 +744,7 @@ export default function App() {
 
       }
 
-
-
       setResult(data);
-
-
 
       const llm = data.llm || data.ml?.llm || {};
 
@@ -833,19 +756,15 @@ export default function App() {
 
         input: data.input || form.description,
 
+        mlCategory: data.ml_category || data.ml?.predicted_category || "Unavailable",
         category: data.predicted_category || data.ml?.predicted_category || "Unknown",
-
-        llmCategory: llm.predicted_category || "Unavailable",
-
+        llmCategory: data.llm_category || llm.predicted_category || "Unavailable",
         confidence: Number(data.confidence || 0),
-
         needsReview: Boolean(data.needs_review),
-
+        reason: data.reason || "",
         llmStatus: llm.status || "unavailable",
 
       };
-
-
 
       setHistory((previous) => [record, ...previous]);
 
@@ -867,60 +786,102 @@ export default function App() {
 
   }
 
-
-
   async function classifyCsv(event) {
+
     event.preventDefault();
+
     setCsvError("");
+
     setCsvSuccess("");
 
     if (!csvFile) {
+
       setCsvError("Please choose a CSV file first.");
+
       return;
+
     }
+
     if (!csvFile.name.toLowerCase().endsWith(".csv")) {
+
       setCsvError("Please upload a .csv file.");
+
       return;
+
     }
+
     if (csvFile.size > 5 * 1024 * 1024) {
+
       setCsvError("The file must be 5 MB or smaller.");
+
       return;
+
     }
 
     setCsvLoading(true);
+
     try {
+
       const body = new FormData();
+
       body.append("file", csvFile);
+
       const response = await fetch(`${API}/api/predict/csv`, {
+
         method: "POST",
+
         body,
+
       });
 
       if (!response.ok) {
+
         let message = "CSV classification failed.";
+
         const contentType = response.headers.get("content-type") || "";
+
         if (contentType.includes("application/json")) {
+
           const data = await response.json();
+
           message = data.detail || data.message || message;
+
         }
+
         throw new Error(message);
+
       }
 
       const blob = await response.blob();
+
       const downloadUrl = window.URL.createObjectURL(blob);
+
       const link = document.createElement("a");
+
       link.href = downloadUrl;
+
       link.download = "voucher_results.csv";
+
       document.body.appendChild(link);
+
       link.click();
+
       link.remove();
+
       window.URL.revokeObjectURL(downloadUrl);
+
       setCsvSuccess("Classification complete. Your results CSV has been downloaded.");
+
     } catch (err) {
+
       setCsvError(`${err.message || "Something went wrong."} Check that the CSV endpoint is enabled and the backend is running.`);
+
     } finally {
+
       setCsvLoading(false);
+
     }
+
   }
 
   function openPage(label) {
@@ -931,8 +892,6 @@ export default function App() {
 
   }
 
-
-
   const reviewCount = history.filter((item) => item.needsReview).length;
 
   const successfulLlmCount = history.filter(
@@ -940,8 +899,6 @@ export default function App() {
     (item) => item.llmStatus === "success"
 
   ).length;
-
-
 
   return (
 
@@ -977,8 +934,6 @@ export default function App() {
 
           </div>
 
-
-
           <button
 
             onClick={() => setMobileMenu(false)}
@@ -995,8 +950,6 @@ export default function App() {
 
         </div>
 
-
-
         <div className="px-4 pt-7">
 
           <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
@@ -1004,8 +957,6 @@ export default function App() {
             Workspace
 
           </p>
-
-
 
           <nav className="space-y-1">
 
@@ -1057,8 +1008,6 @@ export default function App() {
 
         </div>
 
-
-
         <div className="mt-auto p-4">
 
           <div className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-blue-50 p-4">
@@ -1093,8 +1042,6 @@ export default function App() {
 
       </aside>
 
-
-
       {mobileMenu && (
 
         <button
@@ -1108,8 +1055,6 @@ export default function App() {
         />
 
       )}
-
-
 
       <div className="min-h-screen lg:pl-64">
 
@@ -1131,8 +1076,6 @@ export default function App() {
 
             </button>
 
-
-
             <div>
 
               <p className="text-sm font-semibold text-slate-900">{page}</p>
@@ -1146,8 +1089,6 @@ export default function App() {
             </div>
 
           </div>
-
-
 
           <div className="flex items-center gap-3">
 
@@ -1179,8 +1120,6 @@ export default function App() {
 
             </div>
 
-
-
             <button
 
               onClick={checkHealth}
@@ -1197,8 +1136,6 @@ export default function App() {
 
             </button>
 
-
-
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-blue-600 text-sm font-bold text-white">
 
               S
@@ -1208,8 +1145,6 @@ export default function App() {
           </div>
 
         </header>
-
-
 
         <main className="mx-auto max-w-[1500px] space-y-6 p-4 sm:p-7">
 
@@ -1243,8 +1178,6 @@ export default function App() {
 
                 </div>
 
-
-
                 <button
 
                   onClick={() => openPage("Classify Voucher")}
@@ -1262,8 +1195,6 @@ export default function App() {
                 </button>
 
               </div>
-
-
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
@@ -1325,8 +1256,6 @@ export default function App() {
 
               </div>
 
-
-
               <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
 
                 <Panel>
@@ -1348,8 +1277,6 @@ export default function App() {
                     }
 
                   />
-
-
 
                   <div className="grid gap-4 sm:grid-cols-3">
 
@@ -1425,8 +1352,6 @@ export default function App() {
 
                   </div>
 
-
-
                   <button
 
                     onClick={() => openPage("Classify Voucher")}
@@ -1441,8 +1366,6 @@ export default function App() {
 
                 </Panel>
 
-
-
                 <Panel>
 
                   <SectionTitle
@@ -1452,8 +1375,6 @@ export default function App() {
                     subtitle="Current backend connection"
 
                   />
-
-
 
                   <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4">
 
@@ -1483,15 +1404,11 @@ export default function App() {
 
                   </div>
 
-
-
                   <p className="mt-3 text-xs leading-5 text-slate-500">
 
                     {healthMessage || "Checking backend health..."}
 
                   </p>
-
-
 
                   <button
 
@@ -1504,8 +1421,6 @@ export default function App() {
                     <RefreshCw size={15} /> Check connection
 
                   </button>
-
-
 
                   <div className="mt-5 border-t border-slate-100 pt-5">
 
@@ -1535,8 +1450,6 @@ export default function App() {
 
               </div>
 
-
-
               <Panel>
 
                 <SectionTitle
@@ -1562,8 +1475,6 @@ export default function App() {
                   }
 
                 />
-
-
 
                 {history.length === 0 ? (
 
@@ -1597,8 +1508,6 @@ export default function App() {
 
           )}
 
-
-
           {page === "Classify Voucher" && (
 
             <>
@@ -1619,8 +1528,6 @@ export default function App() {
 
               </div>
 
-
-
               <div className="grid items-start gap-6 xl:grid-cols-[0.9fr_1.1fr]">
 
                 <Panel>
@@ -1632,8 +1539,6 @@ export default function App() {
                     subtitle="Description is required; other fields are optional."
 
                   />
-
-
 
                   <form onSubmit={classifyVoucher} className="space-y-5">
 
@@ -1667,8 +1572,6 @@ export default function App() {
 
                     </div>
 
-
-
                     <div>
 
                       <label htmlFor="amount" className="mb-2 block text-sm font-semibold text-slate-700">
@@ -1701,8 +1604,6 @@ export default function App() {
 
                     </div>
 
-
-
                     <div>
 
                       <label htmlFor="party_name" className="mb-2 block text-sm font-semibold text-slate-700">
@@ -1728,8 +1629,6 @@ export default function App() {
                       />
 
                     </div>
-
-
 
                     <div>
 
@@ -1757,8 +1656,6 @@ export default function App() {
 
                     </div>
 
-
-
                     {error && (
 
                       <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
@@ -1770,8 +1667,6 @@ export default function App() {
                       </div>
 
                     )}
-
-
 
                     <button
 
@@ -1809,8 +1704,6 @@ export default function App() {
 
                     </button>
 
-
-
                     <p className="text-center text-xs text-slate-400">
 
                       Powered by your FastAPI ML + Groq LLM pipeline
@@ -1820,8 +1713,6 @@ export default function App() {
                   </form>
 
                 </Panel>
-
-
 
                 <div>
 
@@ -1881,76 +1772,131 @@ export default function App() {
 
               </div>
 
-
               <Panel>
+
                 <SectionTitle
+
                   title="Bulk classify with CSV"
+
                   subtitle="Upload multiple transactions and download their predicted categories as a results CSV."
+
                 />
+
                 <form onSubmit={classifyCsv} className="space-y-4">
+
                   <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-6 text-center">
+
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+
                       <FileSpreadsheet size={24} />
+
                     </div>
+
                     <label htmlFor="csv-upload" className="mt-3 block text-sm font-semibold text-slate-800">
+
                       Choose your transaction CSV
+
                     </label>
+
                     <p className="mt-1 text-xs text-slate-500">CSV only · Maximum 5 MB and 200 rows per upload</p>
+
                     <input
+
                       id="csv-upload"
+
                       type="file"
+
                       accept=".csv,text/csv"
+
                       onChange={(event) => {
+
                         setCsvFile(event.target.files?.[0] || null);
+
                         setCsvError("");
+
                         setCsvSuccess("");
+
                       }}
+
                       className="mx-auto mt-4 block max-w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-teal-800 hover:file:bg-teal-100"
+
                     />
+
                     {csvFile && (
+
                       <p className="mt-3 break-all text-xs font-medium text-slate-600">
+
                         Selected: {csvFile.name} ({(csvFile.size / 1024).toFixed(1)} KB)
+
                       </p>
+
                     )}
+
                   </div>
 
                   {csvError && (
+
                     <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
+
                       <TriangleAlert size={18} className="mt-0.5 shrink-0" />
+
                       <p>{csvError}</p>
+
                     </div>
+
                   )}
+
                   {csvSuccess && (
+
                     <div className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+
                       <CheckCircle2 size={18} className="mt-0.5 shrink-0" />
+
                       <p>{csvSuccess}</p>
+
                     </div>
+
                   )}
 
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
                     <p className="max-w-2xl text-xs leading-5 text-slate-500">
+
                       Include transaction details as columns. If your file has a “Voucher Category” column, it is treated as the actual label and excluded from prediction input.
+
                     </p>
+
                     <button
+
                       type="submit"
+
                       disabled={csvLoading || !csvFile}
+
                       className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+
                     >
+
                       {csvLoading ? (
+
                         <><LoaderCircle size={17} className="animate-spin" /> Classifying CSV...</>
+
                       ) : (
+
                         <><Upload size={17} /> Classify and download <Download size={16} /></>
+
                       )}
+
                     </button>
+
                   </div>
+
                 </form>
+
               </Panel>
 
             </>
 
           )}
-
-
 
           {page === "Prediction History" && (
 
@@ -1971,8 +1917,6 @@ export default function App() {
                 </p>
 
               </div>
-
-
 
               <Panel>
 
@@ -2009,8 +1953,6 @@ export default function App() {
                   }
 
                 />
-
-
 
                 {history.length === 0 ? (
 
@@ -2050,8 +1992,6 @@ export default function App() {
 
           )}
 
-
-
           {page === "Settings" && (
 
             <>
@@ -2067,8 +2007,6 @@ export default function App() {
                 </p>
 
               </div>
-
-
 
               <Panel>
 
@@ -2089,8 +2027,6 @@ export default function App() {
                   }
 
                 />
-
-
 
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
 
@@ -2124,11 +2060,7 @@ export default function App() {
 
                 </div>
 
-
-
                 <p className="mt-3 text-sm text-slate-500">{healthMessage}</p>
-
-
 
                 <div className="mt-6 border-t border-slate-100 pt-5">
 
@@ -2143,8 +2075,6 @@ export default function App() {
                     Categories expected by the LLM classifier.
 
                   </p>
-
-
 
                   <div className="mt-4 flex flex-wrap gap-2">
 
@@ -2169,8 +2099,6 @@ export default function App() {
                 </div>
 
               </Panel>
-
-
 
               <Panel>
 
@@ -2208,8 +2136,6 @@ export default function App() {
 
                   </div>
 
-
-
                   <div className="rounded-xl border border-slate-200 p-4">
 
                     <div className="flex items-center gap-2 text-violet-700">
@@ -2242,8 +2168,6 @@ export default function App() {
 
           )}
 
-
-
           <footer className="flex flex-col justify-between gap-2 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row">
 
             <span>SmartLedger · Intelligent Voucher Classification</span>
@@ -2261,8 +2185,6 @@ export default function App() {
   );
 
 }
-
-
 
 function HistoryTable({ history }) {
 
@@ -2290,8 +2212,6 @@ function HistoryTable({ history }) {
 
         </thead>
 
-
-
         <tbody>
 
           {history.map((item) => (
@@ -2312,6 +2232,14 @@ function HistoryTable({ history }) {
 
                 </p>
 
+                {item.reason && (
+                  <p className="mt-1 text-xs text-amber-700">{item.reason}</p>
+                )}
+
+                {item.reason && (
+                  <p className="mt-1 text-xs text-amber-700">{item.reason}</p>
+                )}
+
                 <p className="mt-1 text-xs text-slate-400">
 
                   ML score: {(item.confidence <= 1
@@ -2326,23 +2254,18 @@ function HistoryTable({ history }) {
 
               </td>
 
-
-
               <td className="px-3 py-4 text-sm text-slate-700">
 
-                {item.category}
+                <div>{item.mlCategory || "Unavailable"}</div>
+                <div className="mt-1 text-xs text-slate-500">Final: {item.category}</div>
 
               </td>
-
-
 
               <td className="px-3 py-4 text-sm text-slate-700">
 
                 {item.llmCategory}
 
               </td>
-
-
 
               <td className="px-3 py-4">
 
@@ -2353,8 +2276,6 @@ function HistoryTable({ history }) {
                 </StatusPill>
 
               </td>
-
-
 
               <td className="whitespace-nowrap px-3 py-4 text-xs text-slate-500">
 
@@ -2373,4 +2294,5 @@ function HistoryTable({ history }) {
     </div>
 
   );
+
 }
