@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+[data-theme="light"] {
+  --color-bg-base: #F5F7FA;
+  --color-surface-card: #FFFFFF;
+  --color-surface-secondary: #EDF1F7;
+  --color-accent-primary: #3D5AFE;
+  --color-accent-secondary: #6C83FF;
+  --color-accent-subtle: #E8ECFF;
+  --color-text-primary: #1D2939;
+  --color-text-secondary: #667085;
+  --color-border: #DCE3EC;
+  --color-status-success: #12A37F;
+  --color-status-warning: #E8960C;
+  --color-status-error: #E5484D;
+  --color-status-info: #0EA5E9;
+  --color-btn-primary-text: #FFFFFF;
+
+  /* Categorical Chart Palette */
+  --chart-1: #3D5AFE;
+  --chart-2: #12A37F;
+  --chart-3: #E8960C;
+  --chart-4: #8B5CF6;
+  --chart-5: #0EA5E9;
+  --chart-6: #E5484D;
+  --chart-7: #EC4899;
+  --chart-8: #64748B;
+
+  --color-backdrop: rgba(17, 23, 34, 0.45);
+  --shadow-dropdown: 0 4px 12px -2px rgba(17, 23, 34, 0.08), 0 0 0 1px var(--color-border);
+  --shadow-modal: 0 12px 32px -4px rgba(17, 23, 34, 0.16), 0 0 0 1px var(--color-border);
+}
+
+[data-theme="dark"] {
+  --color-bg-base: #111722;
+  --color-surface-card: #192231;
+  --color-surface-secondary: #222E40;
+  --color-accent-primary: #7C93FF;
+  --color-accent-secondary: #A3B2FF;
+  --color-accent-subtle: #1F2A5C;
+  --color-text-primary: #E8EDF5;
+  --color-text-secondary: #A0ADBF;
+  --color-border: #303D50;
+  --color-status-success: #3DD6AC;
+  --color-status-warning: #FFB547;
+  --color-status-error: #FF7A80;
+  --color-status-info: #4CC2FF;
+  --color-btn-primary-text: #111722;
+
+  /* Categorical Chart Palette */
+  --chart-1: #7C93FF;
+  --chart-2: #3DD6AC;
+  --chart-3: #FFB547;
+  --chart-4: #A78BFA;
+  --chart-5: #4CC2FF;
+  --chart-6: #FF7A80;
+  --chart-7: #F472B6;
+  --chart-8: #94A3B8;
+
+  --color-backdrop: rgba(0, 0, 0, 0.65);
+  --shadow-dropdown: 0 4px 12px -2px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--color-border);
+  --shadow-modal: 0 12px 32px -4px rgba(0, 0, 0, 0.40), 0 0 0 1px var(--color-border);
+}
+
+html {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom focus ring matching DESIGN.md */
+.focus-ring {
+  outline: 2px solid var(--color-accent-subtle);
+  outline-offset: 0px;
+  border-color: var(--color-accent-primary);
+}
+
+/* Status Badges: 12% Tinted fill with solid text tokens */
+.badge-success {
+  background-color: color-mix(in srgb, var(--color-status-success) 12%, transparent);
+  color: var(--color-status-success);
+  border-color: color-mix(in srgb, var(--color-status-success) 28%, transparent);
+}
+.badge-warning {
+  background-color: color-mix(in srgb, var(--color-status-warning) 12%, transparent);
+  color: var(--color-status-warning);
+  border-color: color-mix(in srgb, var(--color-status-warning) 28%, transparent);
+}
+.badge-error {
+  background-color: color-mix(in srgb, var(--color-status-error) 12%, transparent);
+  color: var(--color-status-error);
+  border-color: color-mix(in srgb, var(--color-status-error) 28%, transparent);
+}
+.badge-info {
+  background-color: color-mix(in srgb, var(--color-status-info) 12%, transparent);
+  color: var(--color-status-info);
+  border-color: color-mix(in srgb, var(--color-status-info) 28%, transparent);
+}
+.badge-accent {
+  background-color: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+  color: var(--color-accent-primary);
+  border-color: color-mix(in srgb, var(--color-accent-primary) 28%, transparent);
+}
+.badge-violet {
+  background-color: color-mix(in srgb, var(--chart-4) 12%, transparent);
+  color: var(--chart-4);
+  border-color: color-mix(in srgb, var(--chart-4) 28%, transparent);
+}
+.badge-neutral {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
